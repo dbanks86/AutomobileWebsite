@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace AutomobileWebsite.BusinessLogicLayer.Business_Logics
+namespace AutomobileWebsite.BusinessLogicLayer.BusinessLogicsClasses
 {
     public class GenericBusinessLogic<TEntity> : IGenericBusinessLogic<TEntity> where TEntity : class
     {
