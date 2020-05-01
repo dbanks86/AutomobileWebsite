@@ -3,7 +3,6 @@
     public class DealershipDto
     {
         public string DealershipName { get; set; }
-
-        public DealershipAddressDto DealershipAddressDto { get; set; }
+        public string WebsiteUrl { get; set; }
     }
 }

@@ -19,24 +19,10 @@ namespace AutomobileWebsite.BusinessLogicLayer.BusinessLogicClasses
             var dealership = new Dealership
             {
                 DealershipName = dealershipDto.DealershipName,
+                WebsiteUrl = dealershipDto.WebsiteUrl,
                 IsActive = true,
                 DateAdded = DateTime.Now
             };
-
-            if (dealershipDto.DealershipAddressDto != null)
-            {
-                var dealershipAddress = new DealershipAddress
-                {
-                    Street = dealershipDto.DealershipAddressDto.Street,
-                    City = dealershipDto.DealershipAddressDto.City,
-                    StateId = dealershipDto.DealershipAddressDto.StateId,
-                    ZipCode = dealershipDto.DealershipAddressDto.ZipCode,
-                    IsActive = true,
-                    DateAdded = DateTime.Now
-                };
-
-                dealership.DealershipAddresses.Add(dealershipAddress);
-            }
 
             _repository.Add(dealership);
         }

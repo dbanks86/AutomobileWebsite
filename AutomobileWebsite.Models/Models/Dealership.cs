@@ -12,6 +12,7 @@ namespace AutomobileWebsite.Models.Models
 
         public int DealershipId { get; set; }
         public string DealershipName { get; set; }
+        public string WebsiteUrl { get; set; }
         public bool? IsActive { get; set; }
         public DateTime DateAdded { get; set; }
 

@@ -2,9 +2,7 @@
 using AutomobileWebsite.BusinessLogicLayer.Interfaces;
 using AutomobileWebsite.Presentation.Mvc.Administrator.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace AutomobileWebsite.Presentation.Mvc.Administrator.Controllers
@@ -26,7 +24,6 @@ namespace AutomobileWebsite.Presentation.Mvc.Administrator.Controllers
         public IActionResult Create()
         {
             DealershipViewModel dealershipViewModel = new DealershipViewModel();
-            dealershipViewModel.States = GetStates();
 
             return View(dealershipViewModel);
         }
@@ -37,34 +34,40 @@ namespace AutomobileWebsite.Presentation.Mvc.Administrator.Controllers
         {
             try
             {
-                dealershipViewModel.States = GetStates();
 
                 if (ModelState.IsValid)
                 {
-                    var dealershipName = _businessLogics.DealershipBusinessLogic.GetSingle(
+                    var dealerships = _businessLogics.DealershipBusinessLogic.Get(
                         d => new
                         {
-                            d.DealershipName
+                            d.DealershipName,
+                            d.WebsiteUrl
                         },
-                        d => d.DealershipName.Equals(dealershipViewModel.DealershipName));
+                        d => d.DealershipName.Equals(dealershipViewModel.DealershipName)
+                        || d.WebsiteUrl.Equals(dealershipViewModel.WebsiteUrl));
 
-                    if (dealershipName != null)
+                    if (dealerships.Count() > 0)
                     {
-                        ModelState.AddModelError(nameof(dealershipViewModel.DealershipName), "Dealership name already exists");
+                        foreach (var dealership in dealerships)
+                        {
+                            if (dealership.DealershipName.Equals(dealershipViewModel.DealershipName))
+                            {
+                                ModelState.AddModelError(nameof(dealershipViewModel.DealershipName), "Dealership name already exists");
+                            }
+
+                            if (dealership.WebsiteUrl.Equals(dealershipViewModel.WebsiteUrl))
+                            {
+                                ModelState.AddModelError(nameof(dealershipViewModel.WebsiteUrl), "Website URL already exists");
+                            }
+                        }
 
                         return View(dealershipViewModel);
                     }
-
+                    
                     var dealershipDto = new DealershipDto
                     {
                         DealershipName = dealershipViewModel.DealershipName,
-                        DealershipAddressDto = new DealershipAddressDto
-                        {
-                            Street = dealershipViewModel.Street,
-                            City = dealershipViewModel.City,
-                            StateId = dealershipViewModel.StateID,
-                            ZipCode = dealershipViewModel.ZipCode
-                        }
+                        WebsiteUrl = dealershipViewModel.WebsiteUrl
                     };
 
                     _businessLogics.DealershipBusinessLogic.Add(dealershipDto);
@@ -72,34 +75,18 @@ namespace AutomobileWebsite.Presentation.Mvc.Administrator.Controllers
                     _businessLogics.Save();
 
                     dealershipViewModel.SuccessMessage = "Dealership successfully added";
+                    dealershipViewModel.DealershipName = "";
+                    dealershipViewModel.WebsiteUrl = "";
+
+                    ModelState.Clear();
                 }
             }
             catch (Exception ex)
             {
-                dealershipViewModel.States = GetStates();
                 dealershipViewModel.ErrorMessage = "An error has occurred";
             }
 
             return View(dealershipViewModel);
-        }
-
-        private List<SelectListItem> GetStates()
-        {
-            var states = _businessLogics.StateBusinessLogic.Get(
-                        s => new SelectListItem
-                        {
-                            Value = s.StateId.ToString(),
-                            Text = s.StateName
-                        })
-                        .ToList();
-
-            states.Insert(0, new SelectListItem
-            {
-                Value = "",
-                Text = "Select a State"
-            });
-
-            return states;
         }
     }
 }

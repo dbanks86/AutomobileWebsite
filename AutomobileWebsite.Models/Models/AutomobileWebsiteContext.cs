@@ -74,6 +74,10 @@ namespace AutomobileWebsite.Models.Models
                 entity.HasIndex(e => e.DealershipName)
                     .HasName("UQ_DealershipName");
 
+                entity.HasIndex(e => e.WebsiteUrl)
+                    .HasName("UQ_Website")
+                    .IsUnique();
+
                 entity.Property(e => e.DealershipId).HasColumnName("DealershipID");
 
                 entity.Property(e => e.DateAdded).HasColumnType("datetime");
@@ -86,6 +90,11 @@ namespace AutomobileWebsite.Models.Models
                 entity.Property(e => e.IsActive)
                     .IsRequired()
                     .HasDefaultValueSql("((1))");
+
+                entity.Property(e => e.WebsiteUrl)
+                    .IsRequired()
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<DealershipAddress>(entity =>
