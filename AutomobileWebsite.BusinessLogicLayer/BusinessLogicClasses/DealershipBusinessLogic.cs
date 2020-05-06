@@ -26,5 +26,14 @@ namespace AutomobileWebsite.BusinessLogicLayer.BusinessLogicClasses
 
             _repository.Add(dealership);
         }
+
+        public void Update(Dealership dealership, DealershipDto dealershipDto)
+        {
+            dealership.DealershipName = dealershipDto.DealershipName;
+            dealership.WebsiteUrl = dealershipDto.WebsiteUrl;
+            dealership.IsActive = dealershipDto.IsActive;
+
+            _repository.Update(dealership);
+        }
     }
 }

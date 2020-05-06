@@ -6,5 +6,6 @@ namespace AutomobileWebsite.BusinessLogicLayer.Interfaces
     public interface IDealershipBusinessLogic : IGenericBusinessLogic<Dealership>
     {
         void Add(DealershipDto dealershipDto);
+        void Update(Dealership dealership, DealershipDto dealershipDto);
     }
 }

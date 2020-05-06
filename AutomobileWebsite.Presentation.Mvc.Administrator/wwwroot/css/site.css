@@ -12,6 +12,10 @@ a {
   color: #0366d6;
 }
 
+.control-label {
+    font-weight: 700;
+}
+
 .btn-primary {
   color: #fff;
   background-color: #1b6ec2;

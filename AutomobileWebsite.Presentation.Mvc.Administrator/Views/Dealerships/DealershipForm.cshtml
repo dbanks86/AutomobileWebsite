@@ -1,0 +1,64 @@
+﻿@model AutomobileWebsite.Presentation.Mvc.Administrator.ViewModels.DealershipFormViewModel
+
+@{
+    ViewData["Title"] = Model.Heading;
+}
+
+<h4>@Model.Heading</h4>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="@Model.Action">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (Model.DealershipId > 0)
+            {
+                <div class="form-group">
+                    <label asp-for="DealershipId" class="control-label"></label>
+                    <select asp-for="DealershipId" id="dealership-select" class="form-control" asp-items="Model.Dealerships"></select>
+                    <span asp-validation-for="DealershipId" class="text-danger"></span>
+                </div>
+            }
+            <div class="form-group">
+                <label asp-for="DealershipName" class="control-label"></label>
+                <input asp-for="DealershipName" id="dealership-name" class="form-control" />
+                <span asp-validation-for="DealershipName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="WebsiteUrl" class="control-label"></label>
+                <input asp-for="WebsiteUrl" id="website-url" class="form-control website-url" />
+                <span asp-validation-for="WebsiteUrl" class="text-danger"></span>
+            </div>
+            @if (Model.DealershipId > 0)
+            {
+                <div class="form-group">
+                    <label>
+                        <input asp-for="IsActive" id="is-active" />
+                        Active
+                    </label>
+                </div>
+            }
+            <div class="form-group">
+                <input type="submit" value="@Model.SaveButtonText" class="btn btn-primary" />
+            </div>
+        </form>
+        @if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+        {
+            <label id="success-message">@Model.SuccessMessage</label>
+
+        }
+        else if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div id="error-message">@Model.ErrorMessage</div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/dealership-form.js" type="text/javascript"></script>
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/DealershipForm.css" />
+}

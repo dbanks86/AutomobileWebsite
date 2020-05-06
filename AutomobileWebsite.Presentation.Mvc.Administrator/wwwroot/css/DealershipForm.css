@@ -1,7 +1,7 @@
-﻿.success-message {
+﻿#success-message {
     color: green;
 }
 
-.error-message {
+#error-message {
     color: red;
 }

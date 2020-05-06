@@ -4,5 +4,6 @@
     {
         public string DealershipName { get; set; }
         public string WebsiteUrl { get; set; }
+        public bool IsActive { get; set; }
     }
 }
