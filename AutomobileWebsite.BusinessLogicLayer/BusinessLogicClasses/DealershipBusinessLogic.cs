@@ -19,7 +19,7 @@ namespace AutomobileWebsite.BusinessLogicLayer.BusinessLogicClasses
             var dealership = new Dealership
             {
                 DealershipName = dealershipDto.DealershipName,
-                WebsiteUrl = dealershipDto.WebsiteUrl,
+                WebsiteUrl = dealershipDto.WebsiteUrl.ToLower(),
                 IsActive = true,
                 DateAdded = DateTime.Now
             };
@@ -30,7 +30,7 @@ namespace AutomobileWebsite.BusinessLogicLayer.BusinessLogicClasses
         public void Update(Dealership dealership, DealershipDto dealershipDto)
         {
             dealership.DealershipName = dealershipDto.DealershipName;
-            dealership.WebsiteUrl = dealershipDto.WebsiteUrl;
+            dealership.WebsiteUrl = dealershipDto.WebsiteUrl.ToLower();
             dealership.IsActive = dealershipDto.IsActive;
 
             _repository.Update(dealership);
