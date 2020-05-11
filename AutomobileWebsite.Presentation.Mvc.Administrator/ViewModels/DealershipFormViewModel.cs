@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace AutomobileWebsite.Presentation.Mvc.Administrator.ViewModels
 {
-    public class DealershipFormViewModel
+    public class DealershipFormViewModel : FormViewModel
     {
         [Display(Name = "Dealership")]
         public int DealershipId { get; set; }
@@ -25,11 +25,6 @@ namespace AutomobileWebsite.Presentation.Mvc.Administrator.ViewModels
         public string WebsiteUrl { get; set; }
 
         public bool IsActive { get; set; }
-
-        public string SuccessMessage { get; set; }
-        public string ErrorMessage { get; set; }
-        public string Heading { get; set; }
-        public string SaveButtonText { get; set; }
 
         public IEnumerable<SelectListItem> Dealerships { get; set; }
 

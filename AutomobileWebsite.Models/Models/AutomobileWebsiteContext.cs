@@ -37,7 +37,9 @@ namespace AutomobileWebsite.Models.Models
 
                 entity.HasIndex(e => e.Model);
 
-                entity.Property(e => e.CarId).HasColumnName("CarID");
+                entity.Property(e => e.CarId)
+                .HasColumnName("CarID")
+                .UseIdentityColumn();
 
                 entity.Property(e => e.DealershipAddressId).HasColumnName("DealershipAddressID");
 
@@ -78,7 +80,9 @@ namespace AutomobileWebsite.Models.Models
                     .HasName("UQ_Website")
                     .IsUnique();
 
-                entity.Property(e => e.DealershipId).HasColumnName("DealershipID");
+                entity.Property(e => e.DealershipId)
+                .HasColumnName("DealershipID")
+                .UseIdentityColumn();
 
                 entity.Property(e => e.DateAdded).HasColumnType("datetime");
 
@@ -107,7 +111,9 @@ namespace AutomobileWebsite.Models.Models
 
                 entity.HasIndex(e => e.ZipCode);
 
-                entity.Property(e => e.DealershipAddressId).HasColumnName("DealershipAddressID");
+                entity.Property(e => e.DealershipAddressId)
+                .HasColumnName("DealershipAddressID")
+                .UseIdentityColumn();
 
                 entity.Property(e => e.City)
                     .IsRequired()
@@ -155,7 +161,9 @@ namespace AutomobileWebsite.Models.Models
                 entity.HasIndex(e => e.StateName)
                     .HasName("UQ_StateName");
 
-                entity.Property(e => e.StateId).HasColumnName("StateID");
+                entity.Property(e => e.StateId)
+                .HasColumnName("StateID")
+                .UseIdentityColumn();
 
                 entity.Property(e => e.StateAbbreviation)
                     .IsRequired()

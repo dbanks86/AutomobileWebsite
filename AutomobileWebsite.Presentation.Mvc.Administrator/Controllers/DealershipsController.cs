@@ -81,8 +81,8 @@ namespace AutomobileWebsite.Presentation.Mvc.Administrator.Controllers
                     _businessLogics.Save();
 
                     dealershipViewModel.SuccessMessage = "Dealership successfully added";
-                    dealershipViewModel.DealershipName = "";
-                    dealershipViewModel.WebsiteUrl = "";
+                    dealershipViewModel.DealershipName = string.Empty;
+                    dealershipViewModel.WebsiteUrl = string.Empty;
 
                     ModelState.Clear();
                 }
@@ -130,7 +130,6 @@ namespace AutomobileWebsite.Presentation.Mvc.Administrator.Controllers
         {
             try
             {
-
                 dealershipViewModel.Heading = "Edit Dealership";
                 dealershipViewModel.SaveButtonText = "Update";
 
@@ -198,6 +197,64 @@ namespace AutomobileWebsite.Presentation.Mvc.Administrator.Controllers
             return View("DealershipForm", dealershipViewModel);
         }
 
+        public IActionResult CreateDealershipAddress()
+        {
+            DealershipAddressFormViewModel dealershipAddressFormViewModel = new DealershipAddressFormViewModel
+            {
+                Dealerships = GetDealershipsWithDefaultSelect(),
+                States = GetStates(),
+                Heading = "Add Dealership Address",
+                SaveButtonText = "Create"
+            };
+
+            return View("DealershipAddressForm", dealershipAddressFormViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateDealershipAddress(DealershipAddressFormViewModel dealershipAddressFormViewModel)
+        {
+            try
+            {
+                dealershipAddressFormViewModel.Dealerships = GetDealershipsWithDefaultSelect();
+                dealershipAddressFormViewModel.States = GetStates();
+
+                if (!ModelState.IsValid)
+                {
+                    return View("DealershipAddressForm", dealershipAddressFormViewModel);
+                }
+
+                _businessLogics.DealershipAddressBusinessLogic.Add(new DealershipAddressDto
+                {
+                    DealershipId = dealershipAddressFormViewModel.DealershipId,
+                    Street = dealershipAddressFormViewModel.Street,
+                    City = dealershipAddressFormViewModel.City,
+                    StateId = dealershipAddressFormViewModel.StateId,
+                    ZipCode = dealershipAddressFormViewModel.ZipCode
+                });
+
+                _businessLogics.Save();
+
+                dealershipAddressFormViewModel.SuccessMessage = "Dealership address successfully added";
+                dealershipAddressFormViewModel.DealershipId = 0;
+                dealershipAddressFormViewModel.Street = string.Empty;
+                dealershipAddressFormViewModel.City = string.Empty;
+                dealershipAddressFormViewModel.StateId = 0;
+                dealershipAddressFormViewModel.ZipCode = string.Empty;
+
+                ModelState.Clear();
+
+                return View("DealershipAddressForm", dealershipAddressFormViewModel);
+            }
+            catch (Exception ex)
+            {
+                dealershipAddressFormViewModel.ErrorMessage = "An error has occurred";
+            }
+
+            return View("DealershipAddressForm", dealershipAddressFormViewModel);
+        }
+
+        #region Common Methods
         private IEnumerable<SelectListItem> GetDealerships()
         {
             return _businessLogics.DealershipBusinessLogic.Get(
@@ -209,5 +266,40 @@ namespace AutomobileWebsite.Presentation.Mvc.Administrator.Controllers
                 null,
                 d => d.OrderBy(d2 => d2.DealershipName));
         }
+
+        private List<SelectListItem> GetStates()
+        {
+            var states = _businessLogics.StateBusinessLogic.Get(
+                        s => new SelectListItem
+                        {
+                            Value = s.StateId.ToString(),
+                            Text = s.StateName
+                        },
+                        null,
+                        s => s.OrderBy(s2 => s2.StateName))
+                        .ToList();
+
+            states.Insert(0, new SelectListItem
+            {
+                Value = string.Empty,
+                Text = "Select State"
+            });
+
+            return states;
+        }
+
+        private List<SelectListItem> GetDealershipsWithDefaultSelect()
+        {
+            var dealerships = GetDealerships().ToList();
+
+            dealerships.Insert(0, new SelectListItem
+            {
+                Value = string.Empty,
+                Text = "Select Dealership"
+            });
+
+            return dealerships;
+        }
+        #endregion
     }
 }
