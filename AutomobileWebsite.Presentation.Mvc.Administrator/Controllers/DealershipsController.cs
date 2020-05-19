@@ -174,7 +174,7 @@ namespace AutomobileWebsite.Presentation.Mvc.Administrator.Controllers
 
                 if (dealership == null)
                 {
-                    return NotFound("Dealership does not exists");
+                    return NotFound("Dealership does not exist");
                 }
 
                 _businessLogics.DealershipBusinessLogic.Update(dealership, new DealershipDto
@@ -254,6 +254,156 @@ namespace AutomobileWebsite.Presentation.Mvc.Administrator.Controllers
             return View("DealershipAddressForm", dealershipAddressFormViewModel);
         }
 
+        public IActionResult EditDealershipAddress(int dealershipAddressId)
+        {
+
+            var dealershipAddress = _businessLogics.DealershipAddressBusinessLogic.GetSingle(
+                da => new
+                {
+                    da.DealershipId,
+                    da.Street,
+                    da.City,
+                    da.StateId,
+                    da.ZipCode,
+                    da.IsActive
+                },
+                da => da.DealershipAddressId == dealershipAddressId);
+
+            if (dealershipAddress == null)
+            {
+                return BadRequest("Dealership address does not exist");
+            }
+
+            return View("DealershipAddressForm", new DealershipAddressFormViewModel
+            {
+                DealershipId = dealershipAddress.DealershipId,
+                Dealerships = GetDealershipsWithAddresses(),
+                DealershipAddressId = dealershipAddressId,
+                DealershipAddresses = GetDealershipAddressesByDealershipId(dealershipAddress.DealershipId),
+                Street = dealershipAddress.Street,
+                City = dealershipAddress.City,
+                StateId = dealershipAddress.StateId,
+                States = GetStates(),
+                ZipCode = dealershipAddress.ZipCode,
+                DealershipIdNew = dealershipAddress.DealershipId,
+                DealershipsEdit = GetDealershipsWithDefaultSelect(),
+                IsActive = dealershipAddress.IsActive.Value,
+                Heading = "Edit Dealership Address",
+                SaveButtonText = "Update"
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult UpdateDealershipAddress(DealershipAddressFormViewModel dealershipAddressFormViewModel)
+        {
+            try
+            {
+                dealershipAddressFormViewModel.Heading = "Edit Dealership Address";
+                dealershipAddressFormViewModel.SaveButtonText = "Update";
+                dealershipAddressFormViewModel.States = GetStates();
+                dealershipAddressFormViewModel.DealershipsEdit = GetDealershipsWithDefaultSelect();
+
+                if (!ModelState.IsValid)
+                {
+                    dealershipAddressFormViewModel.Dealerships = GetDealershipsWithAddresses();
+                    dealershipAddressFormViewModel.DealershipAddresses = GetDealershipAddressesByDealershipId(dealershipAddressFormViewModel.DealershipId);
+
+                    return View("DealershipAddressForm", dealershipAddressFormViewModel);
+                }
+
+                var dealershipAddress = _businessLogics.DealershipAddressBusinessLogic.GetSingle(
+                    da => da,
+                    da => da.DealershipAddressId == dealershipAddressFormViewModel.DealershipAddressId);
+                
+                if (dealershipAddress == null)
+                {
+                    return BadRequest("Dealership address does not exist");
+                }
+
+                _businessLogics.DealershipAddressBusinessLogic.Update(dealershipAddress, new DealershipAddressDto
+                {
+                    DealershipId = dealershipAddressFormViewModel.DealershipIdNew,
+                    Street = dealershipAddressFormViewModel.Street,
+                    City = dealershipAddressFormViewModel.City,
+                    StateId = dealershipAddressFormViewModel.StateId,
+                    ZipCode = dealershipAddressFormViewModel.ZipCode,
+                    IsActive = dealershipAddressFormViewModel.IsActive
+                });
+
+                _businessLogics.Save();
+
+                dealershipAddressFormViewModel.SuccessMessage = "Dealership address successfully updated";
+
+                ModelState.Remove(nameof(dealershipAddressFormViewModel.DealershipId));
+
+                dealershipAddressFormViewModel.DealershipId = dealershipAddressFormViewModel.DealershipIdNew;
+                dealershipAddressFormViewModel.Dealerships = GetDealershipsWithAddresses();
+                dealershipAddressFormViewModel.DealershipAddresses = GetDealershipAddressesByDealershipId(dealershipAddressFormViewModel.DealershipIdNew);
+            }
+            catch (Exception ex)
+            {
+                dealershipAddressFormViewModel.ErrorMessage = "An error has occurred";
+                dealershipAddressFormViewModel.Dealerships = GetDealershipsWithAddresses();
+                dealershipAddressFormViewModel.DealershipAddresses = GetDealershipAddressesByDealershipId(dealershipAddressFormViewModel.DealershipId);
+            }
+
+            return View("DealershipAddressForm", dealershipAddressFormViewModel);
+        }
+
+        public IActionResult GetDealershipAddressById(int dealershipAddressId, int dealershipId)
+        {
+            try
+            {
+                if (dealershipAddressId == 0)
+                {
+                    return PartialView("DealershipAddressFormPartial", new DealershipAddressFormViewModel
+                    {
+                        States = GetStates(),
+                        DealershipsEdit = GetDealershipsWithDefaultSelect(),
+                        DealershipIdNew = dealershipId,
+                        IsActive = false,
+                        IsShowDealershipsEdit = true
+                    });
+                }
+
+                var dealershipAddress = _businessLogics.DealershipAddressBusinessLogic.GetSingle(
+                    da => new
+                    {
+                        da.DealershipAddressId,
+                        da.DealershipId,
+                        da.Street,
+                        da.City,
+                        da.StateId,
+                        da.ZipCode,
+                        da.IsActive
+                    },
+                    da => da.DealershipAddressId == dealershipAddressId);
+
+                if (dealershipAddress == null)
+                {
+                    return BadRequest("No dealership addresses exist");
+                }
+
+                return PartialView("DealershipAddressFormPartial", new DealershipAddressFormViewModel
+                {
+                    DealershipAddressId = dealershipAddress.DealershipAddressId,
+                    Street = dealershipAddress.Street,
+                    City = dealershipAddress.City,
+                    StateId = dealershipAddress.StateId,
+                    States = GetStates(),
+                    ZipCode = dealershipAddress.ZipCode,
+                    DealershipIdNew = dealershipAddress.DealershipId,
+                    DealershipsEdit = GetDealershipsWithDefaultSelect(),
+                    IsActive = dealershipAddress.IsActive.Value
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("An error has occurred");
+            }
+        }
+
         #region Common Methods
         private IEnumerable<SelectListItem> GetDealerships()
         {
@@ -265,6 +415,27 @@ namespace AutomobileWebsite.Presentation.Mvc.Administrator.Controllers
                 },
                 null,
                 d => d.OrderBy(d2 => d2.DealershipName));
+        }
+
+        private List<SelectListItem> GetDealershipsWithAddresses()
+        {
+            var dealerships = _businessLogics.DealershipBusinessLogic.Get(
+               d => new SelectListItem
+               {
+                   Value = d.DealershipId.ToString(),
+                   Text = d.DealershipName
+               },
+               d => d.DealershipAddresses.Count > 0,
+               null,
+               d => d.DealershipAddresses)
+               .ToList();
+
+            if (dealerships == null)
+            {
+                return null;
+            }
+
+            return dealerships;
         }
 
         private List<SelectListItem> GetStates()
@@ -292,13 +463,23 @@ namespace AutomobileWebsite.Presentation.Mvc.Administrator.Controllers
         {
             var dealerships = GetDealerships().ToList();
 
-            dealerships.Insert(0, new SelectListItem
-            {
-                Value = string.Empty,
-                Text = "Select Dealership"
-            });
-
             return dealerships;
+        }
+
+        private List<SelectListItem> GetDealershipAddressesByDealershipId(int dealershipId)
+        {
+            var dealershipAddresses = _businessLogics.DealershipAddressBusinessLogic.Get(
+                        da => new SelectListItem
+                        {
+                            Value = da.DealershipAddressId.ToString(),
+                            Text = $"{da.Street}, {da.City}, {da.State.StateAbbreviation} {da.ZipCode}"
+                        },
+                        da => da.DealershipId == dealershipId,
+                        s => s.OrderBy(s2 => s2.Street));
+
+            var dealershipAddressesList = dealershipAddresses.ToList();
+
+            return dealershipAddressesList;
         }
         #endregion
     }

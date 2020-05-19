@@ -11,8 +11,16 @@ namespace AutomobileWebsite.Presentation.Mvc.Administrator.ViewModels
     public class DealershipAddressFormViewModel : FormViewModel
     {
         [Required(ErrorMessage = "A dealership must be selected")]
-        [Display(Name = "Dealerships")]
+        [Display(Name = "Dealership")]
         public int DealershipId { get; set; }
+
+        [Required(ErrorMessage = "A dealership must be selected")]
+        [Display(Name = "Dealership (Edit)")]
+        public int DealershipIdNew { get; set; }
+
+        [Required(ErrorMessage = "A dealership address must be selected")]
+        [Display(Name = "Dealership Address")]
+        public int DealershipAddressId { get; set; }
 
         [Required(ErrorMessage = "Street required")]
         [StringLength(255, ErrorMessage = "Street must be less than 255 characters")]
@@ -34,7 +42,11 @@ namespace AutomobileWebsite.Presentation.Mvc.Administrator.ViewModels
         [Display(Name = "Is Active")]
         public bool IsActive { get; set; }
 
+        public bool IsShowDealershipsEdit { get; set; }
+
         public List<SelectListItem> Dealerships { get; set; }
+        public List<SelectListItem> DealershipsEdit { get; set; }
+        public List<SelectListItem> DealershipAddresses { get; set; }
         public List<SelectListItem> States { get; set; }
 
         public string Action
@@ -43,7 +55,9 @@ namespace AutomobileWebsite.Presentation.Mvc.Administrator.ViewModels
             {
                 Expression<Func<DealershipsController, IActionResult>> create = c => c.CreateDealershipAddress(this);
 
-                var action =  create;
+                Expression<Func<DealershipsController, IActionResult>> update = c => c.UpdateDealershipAddress(this);
+
+                var action = (DealershipId > 0) ? update : create;
 
                 return (action.Body as MethodCallExpression).Method.Name;
             }

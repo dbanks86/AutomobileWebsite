@@ -7,5 +7,6 @@
         public string City { get; set; }
         public int StateId { get; set; }
         public string ZipCode { get; set; }
+        public bool IsActive { get; set; }
     }
 }

@@ -27,5 +27,17 @@ namespace AutomobileWebsite.BusinessLogicLayer.BusinessLogicClasses
                 DateAdded = DateTime.Now
             });
         }
+
+        public void Update(DealershipAddress dealershipAddress, DealershipAddressDto dealershipAddressDto)
+        {
+            dealershipAddress.DealershipId = dealershipAddressDto.DealershipId;
+            dealershipAddress.Street = dealershipAddressDto.Street;
+            dealershipAddress.City = dealershipAddressDto.City;
+            dealershipAddress.StateId = dealershipAddressDto.StateId;
+            dealershipAddress.ZipCode = dealershipAddressDto.ZipCode;
+            dealershipAddress.IsActive = dealershipAddressDto.IsActive;
+            
+            _repository.Update(dealershipAddress);
+        }
     }
 }

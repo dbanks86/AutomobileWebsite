@@ -1,14 +1,70 @@
 ﻿@model AutomobileWebsite.Presentation.Mvc.Administrator.ViewModels.DealershipAddressFormViewModel
 
 @{
-    ViewData["Title"] = @Model.Heading;
+    ViewData["Title"] = Model.Heading;
 }
 
 <h4>@Model.Heading</h4>
 <hr />
-@Html.Partial("DealershipAddressFormPartial", Model)
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="@Model.Action">
+            <div class="form-section">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="DealershipId" class="control-label"></label>
+                    <select asp-for="DealershipId" id="dealership-select" class="form-control" asp-items="Model.Dealerships">
+                        @if (Model.DealershipId > 0)
+                        {
+                            //Edit Dealership Address defalt select option
+                            <option value="0">All</option>
+                        }
+                        else
+                        {
+                            //Create dealership default select option including validation (value="")
+                            <option value="">Select Dealership</option>
+                        }
+                    </select>
+                    <span asp-validation-for="DealershipId" class="text-danger"></span>
+                </div>
+                @if (Model.DealershipAddressId > 0)
+                {
+                    <div class="form-group">
+                        <label asp-for="DealershipAddressId" class="control-label"></label>
+                        <select asp-for="DealershipAddressId" id="dealership-address-select" class="form-control" asp-items="Model.DealershipAddresses">
+                            @if (Model.DealershipAddresses.Count > 1)
+                            {
+                                <option value="" selected disabled>Select Address</option>
+                            }
+                        </select>
+                        <span asp-validation-for="DealershipAddressId" class="text-danger"></span>
+                    </div>
+                }
+            </div>
+            <div id="dealership-address-form-container">
+                @Html.Partial("DealershipAddressFormPartial", Model)
+            </div>
+            <div class="form-group">
+                <input type="submit" value="@Model.SaveButtonText" class="btn btn-primary" />
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+            {
+                <label id="success-message">@Model.SuccessMessage</label>
+
+            }
+            else if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+            {
+                <div id="error-message">@Model.ErrorMessage</div>
+            }
+        </form>
+    </div>
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="~/js/dealership-address-form.js" type="text/javascript"></script>
+    @if (Model.DealershipAddressId != 0)
+    {
+        <script src="~/js/dealership-address-form-edit.js" type="text/javascript"></script>
+    }
 }
