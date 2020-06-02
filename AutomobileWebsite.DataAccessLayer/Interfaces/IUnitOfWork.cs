@@ -8,6 +8,7 @@ namespace AutomobileWebsite.DataAccessLayer.Interfaces
         public IGenericRepository<State> StateRepository { get; }
         public IGenericRepository<Dealership> DealershipRepository { get; }
         public IGenericRepository<DealershipAddress> DealershipAddressRepository { get; }
+        public IGenericRepository<Car> CarRepository { get; }
 
         void Save();
     }

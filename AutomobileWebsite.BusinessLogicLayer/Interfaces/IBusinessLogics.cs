@@ -7,6 +7,7 @@ namespace AutomobileWebsite.BusinessLogicLayer.Interfaces
         IGenericBusinessLogic<State> StateBusinessLogic { get; }
         IDealershipBusinessLogic DealershipBusinessLogic { get; }
         IDealershipAddressBusinessLogic DealershipAddressBusinessLogic { get; }
+        ICarBusinessLogic CarBusinessLogic { get; }
 
         void Save();
     }

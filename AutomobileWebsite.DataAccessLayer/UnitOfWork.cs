@@ -9,21 +9,24 @@ namespace AutomobileWebsite.DataAccessLayer
     {
         private readonly AutomobileWebsiteContext _context;
 
-        private readonly Lazy<IGenericRepository<State>> _stateRepository;
-        private readonly Lazy<IGenericRepository<Dealership>> _dealershipRepository;
-        private readonly Lazy<IGenericRepository<DealershipAddress>> _dealershipAddressRepository;
+        private readonly Lazy<IGenericRepository<State>> _lazyStateRepository;
+        private readonly Lazy<IGenericRepository<Dealership>> _lazyDealershipRepository;
+        private readonly Lazy<IGenericRepository<DealershipAddress>> _lazyDealershipAddressRepository;
+        private readonly Lazy<IGenericRepository<Car>> _lazyCarRepository;
         private bool disposed = false;
 
-        public IGenericRepository<State> StateRepository => _stateRepository.Value;
-        public IGenericRepository<Dealership> DealershipRepository => _dealershipRepository.Value;
-        public IGenericRepository<DealershipAddress> DealershipAddressRepository => _dealershipAddressRepository.Value;
+        public IGenericRepository<State> StateRepository => _lazyStateRepository.Value;
+        public IGenericRepository<Dealership> DealershipRepository => _lazyDealershipRepository.Value;
+        public IGenericRepository<DealershipAddress> DealershipAddressRepository => _lazyDealershipAddressRepository.Value;
+        public IGenericRepository<Car> CarRepository => _lazyCarRepository.Value;
 
         public UnitOfWork(AutomobileWebsiteContext context)
         {
             _context = context;
-            _stateRepository = new Lazy<IGenericRepository<State>>(() => new GenericRepository<State>(context) ,true);
-            _dealershipRepository = new Lazy<IGenericRepository<Dealership>>(() => new GenericRepository<Dealership>(context), true);
-            _dealershipAddressRepository = new Lazy<IGenericRepository<DealershipAddress>>(() => new GenericRepository<DealershipAddress>(context), true);
+            _lazyStateRepository = new Lazy<IGenericRepository<State>>(() => new GenericRepository<State>(context) ,true);
+            _lazyDealershipRepository = new Lazy<IGenericRepository<Dealership>>(() => new GenericRepository<Dealership>(context), true);
+            _lazyDealershipAddressRepository = new Lazy<IGenericRepository<DealershipAddress>>(() => new GenericRepository<DealershipAddress>(context), true);
+            _lazyCarRepository = new Lazy<IGenericRepository<Car>>(() => new GenericRepository<Car>(context), true);
         }
 
         public void Save()
